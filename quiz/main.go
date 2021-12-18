@@ -4,14 +4,13 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"os"
-	"strconv"
+	"strings"
 )
 
 func main() {
-	csvpath := flag.String("csv", "problems.csv", "The path to the CSV file")
+	csvpath := flag.String("csv", "problems.csv", "A path to a CSV file containing records of format (question, answer)")
 	flag.Parse()
 
 	f, err := os.Open(*csvpath)
@@ -23,33 +22,39 @@ func main() {
 	defer f.Close()
 
 	reader := csv.NewReader(f)
-	reader.ReuseRecord = true
+	records, err := reader.ReadAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+	problems := parseRecords(records)
 
-	var answer, n_correct, n_total int
-
-	for {
-		record, err := reader.Read()
-
-		if err == io.EOF {
-			break
-		}
-
-		expected, err := strconv.Atoi(record[1])
-
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		n_total++
-
-		fmt.Printf("%s ", record[0])
-		fmt.Scan(&answer)
-
-		if answer == expected {
-			n_correct++
+	correct := 0
+	for i, p := range problems {
+		var a string
+		fmt.Printf("%d) %s ", i+1, p.q)
+		fmt.Scanf("%s\n", &a)
+		if a == p.a {
+			correct++
 		}
 	}
 
-	score_pct := float64(n_correct) / float64(n_total) * 100
-	fmt.Printf("Score: %d/%d (%.2f%%)\n", n_correct, n_total, score_pct)
+	total := len(records)
+	score := float64(correct) / float64(total) * 100
+	fmt.Printf("You scored %d/%d (%.2f%%)\n", correct, total, score)
+}
+
+func parseRecords(records [][]string) []problem {
+	ret := make([]problem, len(records))
+	for i, record := range records {
+		ret[i] = problem{
+			strings.TrimSpace(record[0]),
+			strings.TrimSpace(record[1]),
+		}
+	}
+	return ret
+}
+
+type problem struct {
+	q string
+	a string
 }
