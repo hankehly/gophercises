@@ -1,6 +1,7 @@
 package urlshort
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"gopkg.in/yaml.v2"
@@ -39,7 +40,7 @@ func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.Handl
 // See MapHandler to create a similar http.HandlerFunc via
 // a mapping of paths to urls.
 func YAMLHandler(yml []byte, fallback http.Handler) (http.HandlerFunc, error) {
-	pathsToUrls, err := parseYaml(yml)
+	pathsToUrls, err := parseYAML(yml)
 	if err != nil {
 		return nil, err
 	}
@@ -47,9 +48,30 @@ func YAMLHandler(yml []byte, fallback http.Handler) (http.HandlerFunc, error) {
 	return handler, nil
 }
 
-func parseYaml(yml []byte) (map[string]string, error) {
+func parseYAML(yml []byte) (map[string]string, error) {
 	var items []docItem
 	err := yaml.Unmarshal(yml, &items)
+	if err != nil {
+		return nil, err
+	}
+	ret := make(map[string]string, len(items))
+	for _, item := range items {
+		ret[item.Path] = item.Url
+	}
+	return ret, nil
+}
+
+func JSONHandler(jsonBytes []byte, fallback http.Handler) (http.HandlerFunc, error) {
+	if pathsToUrls, err := parseJSON(jsonBytes); err == nil {
+		return MapHandler(pathsToUrls, fallback), nil
+	} else {
+		return nil, err
+	}
+}
+
+func parseJSON(jsonBytes []byte) (map[string]string, error) {
+	var items []docItem
+	err := json.Unmarshal(jsonBytes, &items)
 	if err != nil {
 		return nil, err
 	}
