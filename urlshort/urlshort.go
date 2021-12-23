@@ -2,6 +2,8 @@ package urlshort
 
 import (
 	"net/http"
+
+	"gopkg.in/yaml.v2"
 )
 
 // MapHandler will return an http.HandlerFunc (which also
@@ -12,10 +14,10 @@ import (
 // http.Handler will be called instead.
 func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.HandlerFunc {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		for srcPath, destUrl := range pathsToUrls {
-			if srcPath == r.URL.Path {
-				http.Redirect(rw, r, destUrl, http.StatusTemporaryRedirect)
-			}
+		if destUrl, ok := pathsToUrls[r.URL.Path]; ok {
+			http.Redirect(rw, r, destUrl, http.StatusFound)
+		} else {
+			fallback.ServeHTTP(rw, r)
 		}
 	})
 }
@@ -37,6 +39,30 @@ func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.Handl
 // See MapHandler to create a similar http.HandlerFunc via
 // a mapping of paths to urls.
 func YAMLHandler(yml []byte, fallback http.Handler) (http.HandlerFunc, error) {
-	// TODO: Implement this...
-	return nil, nil
+	pathsToUrls, err := parseYaml(yml)
+	if err != nil {
+		return nil, err
+	}
+	handler := MapHandler(pathsToUrls, fallback)
+	return handler, nil
+}
+
+func parseYaml(yml []byte) (map[string]string, error) {
+	var items []docItem
+	err := yaml.Unmarshal(yml, &items)
+	if err != nil {
+		return nil, err
+	}
+	ret := make(map[string]string, len(items))
+	for _, item := range items {
+		ret[item.Path] = item.Url
+	}
+	return ret, nil
+}
+
+// Struct fields are only unmarshalled if they are exported (have an upper case first letter)
+// https://pkg.go.dev/gopkg.in/yaml.v2#Unmarshal
+type docItem struct {
+	Path string
+	Url  string
 }
