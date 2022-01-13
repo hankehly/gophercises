@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+type Story map[string]Chapter
+
 type Option struct {
 	Text string `json:"text"`
 	Arc  string `json:"arc"`
@@ -27,10 +29,10 @@ func main() {
 }
 
 func index(rw http.ResponseWriter, r *http.Request) {
-	pathChapters := "/Users/hankehly/Projects/gophercises/cyoa/chapters.json"
+	pathStory := "/Users/hankehly/Projects/gophercises/cyoa/story.json"
 	pathTemplate := "/Users/hankehly/Projects/gophercises/cyoa/template.html"
 
-	chapters, err := parseChapters(pathChapters)
+	chapters, err := parseStory(pathStory)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -55,15 +57,15 @@ func index(rw http.ResponseWriter, r *http.Request) {
 
 // Test comment 123
 // Read and unmarshal json file containing chapters data
-func parseChapters(jsonPath string) (map[string]Chapter, error) {
-	var chapters map[string]Chapter
+func parseStory(jsonPath string) (map[string]Chapter, error) {
+	var story Story
 	data, err := os.ReadFile(jsonPath)
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal(data, &chapters)
+	err = json.Unmarshal(data, &story)
 	if err != nil {
 		return nil, err
 	}
-	return chapters, nil
+	return story, nil
 }
