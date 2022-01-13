@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"html/template"
 	"log"
+	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 type Option struct {
@@ -19,24 +22,35 @@ type Chapter struct {
 }
 
 func main() {
-	chapters, err := parseChapters("/Users/hankehly/Projects/gophercises/cyoa/gopher.json")
+	http.HandleFunc("/chapters/", index)
+	http.ListenAndServe(":8080", nil)
+}
 
+func index(rw http.ResponseWriter, r *http.Request) {
+	pathChapters := "/Users/hankehly/Projects/gophercises/cyoa/chapters.json"
+	pathTemplate := "/Users/hankehly/Projects/gophercises/cyoa/template.html"
+
+	chapters, err := parseChapters(pathChapters)
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	// Argument to New must be base name of template file
 	// https://pkg.go.dev/text/template@go1.17.6#Template.ParseFiles
-	tmpl, err := template.New("template.html").ParseFiles("/Users/hankehly/Projects/gophercises/cyoa/template.html")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	err = tmpl.Execute(os.Stdout, chapters["intro"])
+	baseName := filepath.Base(pathTemplate)
+	tmpl, err := template.New(baseName).ParseFiles(pathTemplate)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	log.Println(tmpl)
+	parts := strings.Split(r.URL.Path, "/")
+	key := parts[len(parts)-1]
+
+	if chapter, ok := chapters[key]; ok {
+		err = tmpl.Execute(rw, chapter)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
 }
 
 // Test comment 123

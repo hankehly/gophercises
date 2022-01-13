@@ -13,9 +13,13 @@
     {{ range $i, $el := .Story }}
     <p>{{ $el }}</p>
     {{ end }}
+    <ul>
     {{ range $i, $el := .Options }}
-    <a href="{{ $el.Arc }}">{{ $el.Text }}</a>
+    <li>
+        <a href="/chapters/{{ $el.Arc }}">{{ $el.Text }}</a>
+    </li>
     {{ end }}
+    </ul>
 </body>
 
 </html>
