@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"gophercises/m/v2/cyoa"
@@ -17,10 +16,9 @@ func main() {
 }
 
 func index(rw http.ResponseWriter, r *http.Request) {
-	pathStory := "/Users/hankehly/Projects/gophercises/cyoa/story.json"
-	pathTemplate := "/Users/hankehly/Projects/gophercises/cyoa/template.html"
+	path := "/Users/hankehly/Projects/gophercises/cyoa/story.json"
 
-	f, err := os.Open(pathStory)
+	f, err := os.Open(path)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -31,8 +29,11 @@ func index(rw http.ResponseWriter, r *http.Request) {
 	}
 	// Argument to New must be base name of template file
 	// https://pkg.go.dev/text/template@go1.17.6#Template.ParseFiles
-	baseName := filepath.Base(pathTemplate)
-	tmpl, err := template.New(baseName).ParseFiles(pathTemplate)
+	// pathTemplate := "/Users/hankehly/Projects/gophercises/cyoa/template.html"
+	// baseName := filepath.Base(pathTemplate)
+	// tmpl, err := template.New(baseName).ParseFiles(pathTemplate)
+
+	tmpl, err := template.New("test").Parse(cyoa.Template)
 	if err != nil {
 		log.Fatalln(err)
 	}
