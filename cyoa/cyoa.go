@@ -20,7 +20,7 @@ var Template string = `
     <ul>
         {{ range .Options }}
         <li>
-            <a href="/chapters/{{ .Arc }}">{{ .Text }}</a>
+            <a href="/{{ .Arc }}">{{ .Text }}</a>
         </li>
         {{ end }}
     </ul>
