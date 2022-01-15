@@ -32,7 +32,7 @@ type Chapter struct {
 	ChapterOptions []ChapterOption `json:"options"`
 }
 
-// Isn't this null? Why are we using it as a default?
+// This is set inside 'init'
 var tpl *template.Template
 
 var defaultTemplate string = `
