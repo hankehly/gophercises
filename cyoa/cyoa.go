@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -62,7 +61,7 @@ var defaultTemplate string = `
 // Using init, we can validate our HTML template before execution
 // We initialize the validated tpl value here so it can be used elsewhere
 func init() {
-	log.Println("init called")
+	// log.Println("init called")
 	tpl = template.Must(template.New("").Parse(defaultTemplate))
 }
 
