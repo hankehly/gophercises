@@ -32,7 +32,8 @@ type Chapter struct {
 	ChapterOptions []ChapterOption `json:"options"`
 }
 
-// This is set inside 'init'
+// This is set equal to the value of defaultTemplate inside 'init'
+// before program execution
 var tpl *template.Template
 
 var defaultTemplate string = `
