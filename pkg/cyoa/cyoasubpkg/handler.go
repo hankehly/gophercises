@@ -1,10 +1,12 @@
-package cyoa
+package cyoasubpkg
 
 import (
 	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
+
+	"github.com/hankehly/gophercises/pkg/cyoa"
 )
 
 // This is set equal to the value of defaultTemplate inside 'init'
@@ -51,7 +53,7 @@ func WithTemplate(tmpl template.Template) HandlerOption {
 
 // An example of "Function Options" for configuration
 // https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis
-func NewHandler(s Story, opts ...HandlerOption) http.Handler {
+func NewHandler(s cyoa.Story, opts ...HandlerOption) http.Handler {
 	// Initialize your value with defaults
 	h := handler{s, *tpl}
 	// Allow the programmer to modify the handler using any number of
@@ -65,7 +67,7 @@ func NewHandler(s Story, opts ...HandlerOption) http.Handler {
 // handler is an http.Handler because it implements ServeHTTP
 // but we can add other properties to it
 type handler struct {
-	s Story
+	s cyoa.Story
 	t template.Template
 }
 

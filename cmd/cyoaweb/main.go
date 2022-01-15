@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/hankehly/gophercises/pkg/cyoa"
+	aliastest "github.com/hankehly/gophercises/pkg/cyoa"
+	"github.com/hankehly/gophercises/pkg/cyoa/cyoasubpkg"
 )
 
 func main() {
@@ -20,7 +21,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	story, err := cyoa.JsonStory(f)
+	story, err := aliastest.JsonStory(f)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,7 +32,7 @@ func main() {
 	// h := cyoa.NewHandler(story, setTemplate)
 	//
 	// Or use default values (set inside NewHandler)
-	h := cyoa.NewHandler(story)
+	h := cyoasubpkg.NewHandler(story)
 
 	addr := fmt.Sprintf("0.0.0.0:%d", *port)
 	log.Printf("Started the web application on %s\n", addr)
