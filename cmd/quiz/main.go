@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	csvPath := flag.String("csv", "problems.csv", "A CSV file containing records in format (question, answer)")
+	csvPath := flag.String("csv", "data/quizproblems.csv", "A CSV file containing records in format (question, answer)")
 	seconds := flag.Int("limit", 30, "Stop the quiz as soon as the this limit has exceeded")
 
 	flag.Parse()

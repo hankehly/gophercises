@@ -3,20 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gophercises/m/v2/cyoa"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/hankehly/gophercises/pkg/cyoa"
 )
 
 func main() {
-	unset := "UNSET"
-	jsonStoryPath := flag.String("jsonStoryPath", unset, "Path to JSON story")
+	jsonStoryPath := flag.String("jsonStoryPath", "data/cyoastory.json", "Path to JSON story")
 	flag.Parse()
 
-	if *jsonStoryPath == unset {
-		log.Fatalln("jsonStoryPath is required")
-	}
 	f, err := os.Open(*jsonStoryPath)
 	if err != nil {
 		log.Fatal(err)

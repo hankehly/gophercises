@@ -3,15 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gophercises/m/v2/urlshort"
 	"net/http"
 	"os"
+
+	"github.com/hankehly/gophercises/pkg/urlshort"
 )
 
 // Eg. go run urlshort/main/main.go -path urlshort/urlshort.yaml
 func main() {
 	// yamlPath := flag.String("yaml", "urlshort.yaml", "A path to a YAML file containing an array of items of struct (path: string, url: string)")
-	jsonPath := flag.String("json", "urlshort.json", "A path to a JSON file containing an array of items of struct (path: string, url: string)")
+	jsonPath := flag.String("json", "data/urlshort.json", "A path to a JSON file containing an array of items of struct (path: string, url: string)")
 
 	flag.Parse()
 

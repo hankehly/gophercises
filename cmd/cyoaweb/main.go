@@ -7,21 +7,15 @@ import (
 	"net/http"
 	"os"
 
-	"gophercises/m/v2/cyoa"
+	"github.com/hankehly/gophercises/pkg/cyoa"
 )
 
 func main() {
-	// Todo: What is a more elegant way of handling null user input?
-	unset := "UNSET"
-
 	port := flag.Int("port", 3030, "CYOA web app port")
-	jsonStoryPath := flag.String("jsonStoryPath", unset, "Path to JSON story")
+	jsonStoryPath := flag.String("jsonStoryPath", "data/cyoastory.json", "Path to JSON story")
 
 	flag.Parse()
 
-	if *jsonStoryPath == unset {
-		log.Fatalln("jsonStoryPath is required")
-	}
 	f, err := os.Open(*jsonStoryPath)
 	if err != nil {
 		log.Fatal(err)
